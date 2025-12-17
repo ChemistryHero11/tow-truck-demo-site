@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ClientProviders from "@/components/ClientProviders";
 
 export const metadata: Metadata = {
-  title: "24/7 Towing & Recovery | Fast Roadside Assistance",
-  description: "Stuck on the road? We're already on the way. 24/7 emergency towing, heavy duty recovery, lockouts, jump starts, and roadside assistance. Call now for fast response.",
+  title: "24/7 Towing & Recovery | Fast Roadside Assistance | Houston TX",
+  description: "Stuck on the road? We're already on the way. 24/7 emergency towing, heavy duty recovery, lockouts, jump starts, and roadside assistance in Houston. Call now for fast response.",
+  keywords: "tow truck, towing service, roadside assistance, Houston, emergency towing, heavy duty recovery",
+  openGraph: {
+    title: "RapidTow - 24/7 Towing & Recovery",
+    description: "Houston's fastest tow truck service. 30-minute average response time.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -12,9 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased bg-slate-900 text-white overflow-x-hidden">
-        {children}
+    <html lang="en" className="dark">
+      <body className="antialiased bg-slate-900 text-white overflow-x-hidden cursor-none md:cursor-none">
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import {
   Phone,
   MapPin,
@@ -18,8 +18,17 @@ import {
   Car,
   AlertTriangle,
   Wrench,
+  Zap,
 } from "lucide-react";
-import SmoothScroll from "@/components/SmoothScroll";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import MagneticButton from "@/components/MagneticButton";
+import Testimonials from "@/components/Testimonials";
+import { BeforeAfterSection } from "@/components/BeforeAfterSlider";
+import BlogSection from "@/components/BlogSection";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
+import SoundToggle from "@/components/SoundEffects";
+import { InteractiveMapSection } from "@/components/GoogleMap";
 
 const navLinks = [
   { name: "Services", href: "#services" },
@@ -45,14 +54,14 @@ const services = [
     description: "Light duty flatbed & rollback towing for cars, trucks, and SUVs",
     icon: Truck,
     size: "large",
-    image: "https://images.pexels.com/photos/6471927/pexels-photo-6471927.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/images/service-towing.jpg",
   },
   {
     title: "Heavy Duty Recovery",
     description: "Semi-trucks, RVs, buses, and commercial vehicles",
     icon: AlertTriangle,
     size: "tall",
-    image: "https://images.pexels.com/photos/3806249/pexels-photo-3806249.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/images/service-heavy.jpg",
   },
   {
     title: "Lockouts",
@@ -74,6 +83,41 @@ const services = [
   },
 ];
 
+const heroSlides = [
+  {
+    image: "/images/hero-1.jpg",
+    headline: "STUCK? WE'RE ALREADY",
+    highlightedText: "ON THE WAY.",
+    subheadline: "24/7 Heavy Duty Towing & Roadside Recovery in Houston",
+    primaryCta: { text: "CALL DISPATCH NOW", href: "tel:+15551234567" },
+    secondaryCta: { text: "GET A QUOTE", href: "#quote" },
+  },
+  {
+    image: "/images/hero-2.jpg",
+    headline: "BREAKDOWN ON I-45?",
+    highlightedText: "WE'VE GOT YOU.",
+    subheadline: "Fast response times across Houston highways & surrounding areas",
+    primaryCta: { text: "EMERGENCY TOWING", href: "tel:+15551234567" },
+    secondaryCta: { text: "VIEW SERVICES", href: "#services" },
+  },
+  {
+    image: "/images/hero-3.jpg",
+    headline: "HOUSTON'S FASTEST",
+    highlightedText: "TOW TRUCK SERVICE.",
+    subheadline: "30-minute average response • Licensed & insured • 500+ 5-star reviews",
+    primaryCta: { text: "CALL (555) 123-4567", href: "tel:+15551234567" },
+    secondaryCta: { text: "SEE COVERAGE AREA", href: "#coverage" },
+  },
+  {
+    image: "/images/hero-4.jpg",
+    headline: "FLAT TIRE? DEAD BATTERY?",
+    highlightedText: "HELP IS MINUTES AWAY.",
+    subheadline: "Roadside assistance for lockouts, jump starts, tire changes & more",
+    primaryCta: { text: "GET ROADSIDE HELP", href: "tel:+15551234567" },
+    secondaryCta: { text: "ALL SERVICES", href: "#services" },
+  },
+];
+
 const faqs = [
   {
     q: "How fast can you get to me?",
@@ -92,26 +136,6 @@ const faqs = [
     a: "Absolutely. Our dispatch center operates around the clock, 365 days a year. We're here when you need us most.",
   },
 ];
-
-function AnimatedText({ text, className }: { text: string; className?: string }) {
-  const words = text.split(" ");
-  
-  return (
-    <motion.span className={className}>
-      {words.map((word, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: i * 0.1 }}
-          className="inline-block mr-[0.25em]"
-        >
-          {word}
-        </motion.span>
-      ))}
-    </motion.span>
-  );
-}
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -158,20 +182,25 @@ function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
-            <motion.a
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1">
+              <LanguageToggle />
+              <ThemeToggle />
+              <SoundToggle />
+            </div>
+
+            <MagneticButton
               href="tel:+15551234567"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               className="hidden sm:flex items-center gap-2 bg-safety-orange hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 animate-pulse-glow"
             >
               <Phone className="w-5 h-5" />
               <span className="font-['Oswald'] tracking-wide">CALL NOW</span>
-            </motion.a>
+            </MagneticButton>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 text-white"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -204,6 +233,7 @@ function Navbar() {
 
 function HeroSection() {
   const ref = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -211,22 +241,37 @@ function HeroSection() {
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 6000);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
+
+  const slide = heroSlides[currentSlide];
+
   return (
     <section ref={ref} className="relative h-screen overflow-hidden">
-      <motion.div style={{ scale }} className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="https://images.pexels.com/photos/6471926/pexels-photo-6471926.jpeg?auto=compress&cs=tinysrgb&w=1920"
-          className="w-full h-full object-cover"
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          style={{ scale }}
+          className="absolute inset-0"
         >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 vignette-overlay" />
-      </motion.div>
+          <div
+            className="w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${slide.image})` }}
+          />
+          <div className="absolute inset-0 hero-gradient" />
+          <div className="absolute inset-0 vignette-overlay" />
+        </motion.div>
+      </AnimatePresence>
 
       <motion.div
         style={{ opacity }}
@@ -244,64 +289,82 @@ function HeroSection() {
           </span>
         </motion.div>
 
-        <h1 className="font-['Oswald'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
-          <AnimatedText text="STUCK? WE'RE ALREADY" />
-          <br />
-          <span className="text-safety-orange">
-            <AnimatedText text="ON THE WAY." />
-          </span>
-        </h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-xl sm:text-2xl text-white/70 mb-10 max-w-2xl"
-        >
-          24/7 Heavy Duty Towing & Roadside Recovery in Metro City
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="flex flex-col sm:flex-row gap-4"
-        >
-          <motion.a
-            href="tel:+15551234567"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(249, 115, 22, 0.6)" }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center gap-3 bg-safety-orange hover:bg-orange-500 text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 shadow-2xl shadow-safety-orange/30"
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.6 }}
           >
-            <Phone className="w-6 h-6" />
-            <span className="font-['Oswald'] tracking-wider">CALL DISPATCH IMMEDIATELY</span>
-          </motion.a>
-          <motion.a
-            href="#quote"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center gap-3 border-2 border-white/30 hover:border-safety-orange text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 hover:bg-safety-orange/10"
-          >
-            <span className="font-['Oswald'] tracking-wider">GET A QUOTE ONLINE</span>
-            <ChevronRight className="w-5 h-5" />
-          </motion.a>
-        </motion.div>
+            <h1 className="font-['Oswald'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+              {slide.headline}
+              <br />
+              <span className="text-safety-orange">{slide.highlightedText}</span>
+            </h1>
+
+            <p className="text-xl sm:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
+              {slide.subheadline}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.a
+                href={slide.primaryCta.href}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(249, 115, 22, 0.6)" }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center gap-3 bg-safety-orange hover:bg-orange-500 text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 shadow-2xl shadow-safety-orange/30"
+              >
+                <Phone className="w-6 h-6" />
+                <span className="font-['Oswald'] tracking-wider">{slide.primaryCta.text}</span>
+              </motion.a>
+              <motion.a
+                href={slide.secondaryCta.href}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center gap-3 border-2 border-white/30 hover:border-safety-orange text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 hover:bg-safety-orange/10"
+              >
+                <span className="font-['Oswald'] tracking-wider">{slide.secondaryCta.text}</span>
+                <ChevronRight className="w-5 h-5" />
+              </motion.a>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
+      {/* Bottom section: slide indicators + scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4">
+        {/* Slide indicators */}
+        <div className="flex gap-3">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? "w-8 bg-safety-orange"
+                  : "w-2 bg-white/40 hover:bg-white/60"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Scroll indicator */}
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="hidden sm:flex flex-col items-center gap-2"
         >
-          <motion.div className="w-1 h-2 bg-safety-orange rounded-full" />
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2"
+          >
+            <motion.div className="w-1 h-2 bg-safety-orange rounded-full" />
+          </motion.div>
+          <span className="text-white/40 text-xs uppercase tracking-widest">scroll</span>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -412,6 +475,47 @@ function ServicesSection() {
   );
 }
 
+function StatsSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const stats = [
+    { value: 500, suffix: "+", label: "5-Star Reviews", icon: Star },
+    { value: 30, suffix: " min", label: "Average Response", icon: Zap },
+    { value: 15000, suffix: "+", label: "Vehicles Rescued", icon: Truck },
+    { value: 24, suffix: "/7", label: "Always Available", icon: Clock },
+  ];
+
+  return (
+    <section ref={ref} className="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="text-center"
+              >
+                <div className="inline-flex items-center justify-center w-14 h-14 bg-safety-orange/20 rounded-full mb-4">
+                  <Icon className="w-7 h-7 text-safety-orange" />
+                </div>
+                <div className="font-['Oswald'] text-4xl md:text-5xl font-bold text-white mb-2">
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                </div>
+                <p className="text-white/60 text-sm uppercase tracking-wider">{stat.label}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CoverageSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -439,7 +543,7 @@ function CoverageSection() {
             LIVE <span className="text-safety-orange">DISPATCH MAP</span>
           </h2>
           <p className="text-white/60 mt-4 text-lg max-w-2xl mx-auto">
-            Covering Metro City and surrounding 50 miles. Our fleet is strategically positioned for rapid response.
+            Covering Houston and surrounding 50 miles. Our fleet is strategically positioned for rapid response.
           </p>
         </motion.div>
 
@@ -460,24 +564,17 @@ function CoverageSection() {
               }} />
 
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative">
-                  <motion.div
-                    animate={{ scale: [1, 2.5], opacity: [0.8, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
-                    className="absolute inset-0 w-32 h-32 -m-16 border-2 border-safety-orange rounded-full"
-                  />
-                  <motion.div
-                    animate={{ scale: [1, 2.5], opacity: [0.8, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: 0.5, ease: "easeOut" }}
-                    className="absolute inset-0 w-32 h-32 -m-16 border-2 border-safety-orange rounded-full"
-                  />
-                  <motion.div
-                    animate={{ scale: [1, 2.5], opacity: [0.8, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: 1, ease: "easeOut" }}
-                    className="absolute inset-0 w-32 h-32 -m-16 border-2 border-safety-orange rounded-full"
-                  />
+                <div className="relative flex items-center justify-center">
+                  {/* Radar rings using CSS animations for smoother performance */}
+                  <div className="absolute w-32 h-32 border-2 border-safety-orange/60 rounded-full animate-radar-1" />
+                  <div className="absolute w-32 h-32 border-2 border-safety-orange/60 rounded-full animate-radar-2" />
+                  <div className="absolute w-32 h-32 border-2 border-safety-orange/60 rounded-full animate-radar-3" />
                   
-                  <div className="relative w-16 h-16 bg-safety-orange rounded-full flex items-center justify-center shadow-2xl shadow-safety-orange/50">
+                  {/* Static glow ring */}
+                  <div className="absolute w-24 h-24 bg-safety-orange/10 rounded-full" />
+                  
+                  {/* Center hub */}
+                  <div className="relative w-16 h-16 bg-safety-orange rounded-full flex items-center justify-center shadow-2xl shadow-safety-orange/50 z-10">
                     <Truck className="w-8 h-8 text-white" />
                   </div>
                 </div>
@@ -920,19 +1017,27 @@ function MobileCallButton() {
 
 export default function Home() {
   return (
-    <SmoothScroll>
-      <main className="relative">
+    <>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <main id="main-content" className="relative" role="main">
         <Navbar />
         <HeroSection />
         <Marquee />
         <ServicesSection />
+        <StatsSection />
         <CoverageSection />
+        <Testimonials />
+        <BeforeAfterSection />
+        <InteractiveMapSection />
         <DispatchForm />
         <AboutSection />
+        <BlogSection />
         <FAQSection />
         <Footer />
         <MobileCallButton />
       </main>
-    </SmoothScroll>
+    </>
   );
 }
