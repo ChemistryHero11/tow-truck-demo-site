@@ -22,7 +22,7 @@ export default function GoogleMap({ className = "" }: MapProps) {
   useEffect(() => {
     if (typeof window !== "undefined" && !window.google) {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAyipF0mZOc0x3rCaxCe9pR0dHJoGS9AFU&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&callback=initMap`;
       script.async = true;
       script.defer = true;
       
