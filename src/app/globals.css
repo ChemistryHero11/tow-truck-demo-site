@@ -1,27 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@layer components {
+  .glass-industrial {
+    @apply bg-slate-800/40 backdrop-blur-md border border-slate-700/50;
+  }
+  
+  .glass-card {
+    @apply bg-slate-800/60 backdrop-blur-lg border border-slate-600/30 rounded-2xl;
+  }
+  
+  .text-gradient-orange {
+    @apply bg-gradient-to-r from-safety-orange to-safety-yellow bg-clip-text text-transparent;
+  }
+  
+  .btn-primary {
+    @apply bg-safety-orange hover:bg-orange-500 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-safety-orange/50;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-white/30 hover:border-safety-orange text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 hover:bg-safety-orange/10;
+  }
+  
+  .hazard-stripe {
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(249, 115, 22, 0.05) 10px,
+      rgba(249, 115, 22, 0.05) 20px
+    );
+  }
+}
+
+.vignette-overlay {
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.4) 50%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.6) 50%, rgba(15, 23, 42, 1) 100%);
 }
