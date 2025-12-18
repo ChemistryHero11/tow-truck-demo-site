@@ -263,10 +263,30 @@ html.light .border-slate-700 {
   }
 }
 
-/* Prevent horizontal scroll */
-html, body {
+/* Prevent horizontal scroll - aggressive fix */
+html {
   overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
+  max-width: 100vw;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
+#main-content {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Constrain all potentially overflowing elements */
+.glass-card, .glass-industrial {
+  overflow: hidden;
 }
 
 /* Safe area insets for notched devices */

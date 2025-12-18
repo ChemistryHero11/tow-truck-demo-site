@@ -608,17 +608,17 @@ function CoverageSection() {
                 </motion.div>
               ))}
 
-              <div className="absolute bottom-4 left-4 glass-industrial px-4 py-2 rounded-lg">
-                <div className="flex items-center gap-2">
+              <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 glass-industrial px-2 py-1 sm:px-4 sm:py-2 rounded-lg">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-sm text-white/80">5 Trucks Active</span>
+                  <span className="text-xs sm:text-sm text-white/80">5 Active</span>
                 </div>
               </div>
 
-              <div className="absolute bottom-4 right-4 glass-industrial px-4 py-2 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-safety-orange" />
-                  <span className="text-sm text-white/80">Avg. ETA: 28 min</span>
+              <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 glass-industrial px-2 py-1 sm:px-4 sm:py-2 rounded-lg">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-safety-orange" />
+                  <span className="text-xs sm:text-sm text-white/80">ETA: 28m</span>
                 </div>
               </div>
             </div>
