@@ -10,6 +10,12 @@ export const metadata: Metadata = {
     title: "RapidTow - 24/7 Towing & Recovery",
     description: "Houston's fastest tow truck service. 30-minute average response time.",
     type: "website",
+    siteName: "RapidTow",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RapidTow - 24/7 Towing & Recovery",
+    description: "Houston's fastest tow truck service. 30-minute average response time.",
   },
 };
 
