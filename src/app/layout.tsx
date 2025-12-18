@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="antialiased bg-slate-900 text-white overflow-x-hidden cursor-none md:cursor-none">
+      <body className="antialiased bg-slate-900 text-white overflow-x-hidden overscroll-none md:cursor-none">
         <ClientProviders>
           {children}
         </ClientProviders>

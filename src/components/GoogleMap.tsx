@@ -142,7 +142,7 @@ export function InteractiveMapSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="glass-card p-4 h-[400px]">
+            <div className="glass-card p-4 h-[280px] sm:h-[350px] lg:h-[400px]">
               <GoogleMap className="w-full h-full" />
             </div>
           </motion.div>

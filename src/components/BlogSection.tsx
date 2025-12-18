@@ -73,14 +73,14 @@ export default function BlogSection() {
                     />
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center gap-4 text-sm text-white/50 mb-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-white/50 mb-3">
                       <span className="text-safety-orange font-medium">{post.category}</span>
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                         {post.date}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                         {post.readTime}
                       </span>
                     </div>

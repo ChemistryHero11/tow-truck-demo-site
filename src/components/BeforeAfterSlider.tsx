@@ -35,16 +35,25 @@ export default function BeforeAfterSlider({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault(); // Prevent page scroll while dragging
+    handleMove(e.touches[0].clientX);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    // Start tracking immediately on touch
     handleMove(e.touches[0].clientX);
   };
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden cursor-ew-resize select-none"
+      className="relative w-full aspect-[16/10] sm:aspect-[16/10] rounded-2xl overflow-hidden cursor-ew-resize select-none touch-none"
       onMouseMove={handleMouseMove}
       onMouseUp={() => setIsDragging(false)}
       onMouseLeave={() => setIsDragging(false)}
+      onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={() => setIsDragging(false)}
     >

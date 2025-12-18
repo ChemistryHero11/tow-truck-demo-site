@@ -152,7 +152,7 @@ function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass-industrial py-3" : "bg-transparent py-5"
+        scrolled ? "glass-industrial py-3" : "bg-slate-900/95 sm:bg-transparent py-4 sm:py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -224,6 +224,11 @@ function Navbar() {
                 {link.name}
               </a>
             ))}
+            <div className="flex items-center gap-2 pt-4 border-t border-slate-700/50 mt-4">
+              <LanguageToggle />
+              <ThemeToggle />
+              <SoundToggle />
+            </div>
           </motion.div>
         )}
       </div>
@@ -257,10 +262,10 @@ function HeroSection() {
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           style={{ scale }}
           className="absolute inset-0"
         >
@@ -297,13 +302,13 @@ function HeroSection() {
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="font-['Oswald'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+            <h1 className="font-['Oswald'] text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-4 sm:mb-6 tracking-tight">
               {slide.headline}
               <br />
               <span className="text-safety-orange">{slide.highlightedText}</span>
             </h1>
 
-            <p className="text-xl sm:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 mb-6 sm:mb-10 max-w-2xl mx-auto">
               {slide.subheadline}
             </p>
 
@@ -312,7 +317,7 @@ function HeroSection() {
                 href={slide.primaryCta.href}
                 whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(249, 115, 22, 0.6)" }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-3 bg-safety-orange hover:bg-orange-500 text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 shadow-2xl shadow-safety-orange/30"
+                className="flex items-center justify-center gap-2 sm:gap-3 bg-safety-orange hover:bg-orange-500 text-white font-bold py-4 px-6 sm:py-5 sm:px-10 rounded-xl text-base sm:text-lg transition-all duration-300 shadow-2xl shadow-safety-orange/30"
               >
                 <Phone className="w-6 h-6" />
                 <span className="font-['Oswald'] tracking-wider">{slide.primaryCta.text}</span>
@@ -321,7 +326,7 @@ function HeroSection() {
                 href={slide.secondaryCta.href}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-3 border-2 border-white/30 hover:border-safety-orange text-white font-bold py-5 px-10 rounded-xl text-lg transition-all duration-300 hover:bg-safety-orange/10"
+                className="flex items-center justify-center gap-2 sm:gap-3 border-2 border-white/30 hover:border-safety-orange text-white font-bold py-4 px-6 sm:py-5 sm:px-10 rounded-xl text-base sm:text-lg transition-all duration-300 hover:bg-safety-orange/10"
               >
                 <span className="font-['Oswald'] tracking-wider">{slide.secondaryCta.text}</span>
                 <ChevronRight className="w-5 h-5" />
@@ -421,7 +426,7 @@ function ServicesSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[200px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 auto-rows-[180px] sm:auto-rows-[200px]">
           {services.map((service, index) => {
             const Icon = service.icon;
             const gridClass =
@@ -551,7 +556,7 @@ function CoverageSection() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative aspect-[16/10] max-w-4xl mx-auto"
+          className="relative aspect-[4/3] sm:aspect-[16/10] max-w-4xl mx-auto"
         >
           <div className="absolute inset-0 glass-card p-8">
             <div className="relative w-full h-full rounded-xl overflow-hidden bg-slate-900/80">
@@ -678,14 +683,14 @@ function DispatchForm() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-card p-8"
+          className="glass-card p-4 sm:p-8"
         >
-          <form className="space-y-8">
+          <form className="space-y-6 sm:space-y-8">
             <div>
               <label className="block font-['Oswald'] text-lg mb-4 text-white/90">
                 WHERE ARE YOU?
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-4">
                 {locations.map((loc) => (
                   <button
                     key={loc.value}
@@ -708,7 +713,7 @@ function DispatchForm() {
               <label className="block font-['Oswald'] text-lg mb-4 text-white/90">
                 VEHICLE TYPE?
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {vehicles.map((v) => {
                   const Icon = v.icon;
                   return (
@@ -734,7 +739,7 @@ function DispatchForm() {
               <label className="block font-['Oswald'] text-lg mb-4 text-white/90">
                 WHAT&apos;S THE ISSUE?
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 md:grid-cols-5">
                 {issues.map((iss) => {
                   const Icon = iss.icon;
                   return (
@@ -756,7 +761,7 @@ function DispatchForm() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 placeholder="Your Name"
@@ -934,7 +939,7 @@ function Footer() {
   return (
     <footer className="bg-slate-800/80 border-t border-slate-700/50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-safety-orange rounded-lg flex items-center justify-center">
@@ -1021,7 +1026,7 @@ export default function Home() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <main id="main-content" className="relative" role="main">
+      <main id="main-content" className="relative pb-16 sm:pb-0" role="main">
         <Navbar />
         <HeroSection />
         <Marquee />

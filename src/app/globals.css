@@ -244,3 +244,41 @@ html.light .border-slate-700 {
   background: rgba(249, 115, 22, 0.3);
   color: white;
 }
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  button, a {
+    min-height: 44px;
+  }
+  
+  /* Reduce section padding on mobile */
+  section {
+    @apply py-16;
+  }
+  
+  /* Ensure text doesn't overflow */
+  h1, h2, h3 {
+    word-break: break-word;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: max(0px)) {
+  .fixed.bottom-0 {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Smoother animations on mobile */
+@media (max-width: 640px) {
+  .animate-marquee {
+    animation-duration: 30s;
+  }
+}
