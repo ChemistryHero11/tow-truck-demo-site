@@ -14,7 +14,7 @@ export default async function Image() {
     (
       <div
         style={{
-          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
+          background: "#0f172a",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -25,103 +25,117 @@ export default async function Image() {
           position: "relative",
         }}
       >
-        {/* Hazard stripes at top */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "8px",
-            background: "repeating-linear-gradient(90deg, #f97316, #f97316 20px, #0f172a 20px, #0f172a 40px)",
-          }}
-        />
-
-        {/* Logo container */}
+        {/* Large tow truck icon in center */}
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: "16px",
-            marginBottom: "24px",
+            justifyContent: "center",
           }}
         >
+          {/* Tow truck SVG icon */}
+          <svg
+            width="200"
+            height="200"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#f97316"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M10 17h4V5H2v12h3" />
+            <path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1" />
+            <circle cx="7.5" cy="17.5" r="2.5" fill="#f97316" stroke="#f97316" />
+            <circle cx="17.5" cy="17.5" r="2.5" fill="#f97316" stroke="#f97316" />
+          </svg>
+
+          {/* Company name */}
           <div
             style={{
-              width: "80px",
-              height: "80px",
-              background: "#f97316",
-              borderRadius: "16px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              fontSize: "48px",
+              gap: "12px",
+              marginTop: "32px",
             }}
           >
-            🚛
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                background: "#f97316",
+                borderRadius: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M10 17h4V5H2v12h3" />
+                <path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1" />
+                <circle cx="7.5" cy="17.5" r="2.5" />
+                <circle cx="17.5" cy="17.5" r="2.5" />
+              </svg>
+            </div>
+            <div
+              style={{
+                fontSize: "72px",
+                fontWeight: "bold",
+                color: "white",
+                letterSpacing: "4px",
+              }}
+            >
+              RAPID<span style={{ color: "#f97316" }}>TOW</span>
+            </div>
           </div>
+
+          {/* Tagline */}
           <div
             style={{
-              fontSize: "64px",
-              fontWeight: "bold",
-              color: "white",
-              letterSpacing: "4px",
+              fontSize: "36px",
+              color: "rgba(255,255,255,0.8)",
+              marginTop: "24px",
+              fontWeight: "600",
             }}
           >
-            RAPID<span style={{ color: "#f97316" }}>TOW</span>
+            24/7 Emergency Towing & Roadside Assistance
+          </div>
+
+          {/* Location */}
+          <div
+            style={{
+              fontSize: "28px",
+              color: "#f97316",
+              marginTop: "16px",
+              fontWeight: "500",
+            }}
+          >
+            Houston, TX • 30 Min Response Time
           </div>
         </div>
 
-        {/* Tagline */}
-        <div
-          style={{
-            fontSize: "42px",
-            color: "white",
-            fontWeight: "bold",
-            marginBottom: "16px",
-            textAlign: "center",
-          }}
-        >
-          24/7 Emergency Towing & Recovery
-        </div>
-
-        {/* Subtitle */}
-        <div
-          style={{
-            fontSize: "28px",
-            color: "rgba(255,255,255,0.7)",
-            marginBottom: "32px",
-          }}
-        >
-          Houston&apos;s Fastest Response • 30 Min Average ETA
-        </div>
-
-        {/* CTA Banner */}
-        <div
-          style={{
-            background: "#f97316",
-            padding: "16px 48px",
-            borderRadius: "12px",
-            fontSize: "32px",
-            fontWeight: "bold",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-          }}
-        >
-          📞 Call Now for Immediate Help
-        </div>
-
-        {/* Hazard stripes at bottom */}
+        {/* Orange glow effect behind truck */}
         <div
           style={{
             position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "8px",
-            background: "repeating-linear-gradient(90deg, #f97316, #f97316 20px, #0f172a 20px, #0f172a 40px)",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -60%)",
+            width: "300px",
+            height: "300px",
+            background: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)",
+            borderRadius: "50%",
+            zIndex: -1,
           }}
         />
       </div>
