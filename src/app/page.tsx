@@ -239,6 +239,8 @@ function Navbar() {
 function HeroSection() {
   const ref = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(new Array(heroSlides.length).fill(false));
+  const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -246,32 +248,63 @@ function HeroSection() {
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
+  useEffect(() => {
+    const preloadImages = async () => {
+      const loadPromises = heroSlides.map((slide, index) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            setImagesLoaded(prev => {
+              const newState = [...prev];
+              newState[index] = true;
+              return newState;
+            });
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = slide.image;
+        });
+      });
+      
+      await Promise.all(loadPromises);
+      setAllImagesPreloaded(true);
+    };
+
+    preloadImages();
+  }, []);
+
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
   }, []);
 
   useEffect(() => {
+    if (!allImagesPreloaded) return;
+    
     const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
-  }, [nextSlide]);
+  }, [nextSlide, allImagesPreloaded]);
 
   const slide = heroSlides[currentSlide];
+  const isCurrentImageLoaded = imagesLoaded[currentSlide];
 
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden">
+    <section ref={ref} className="relative h-screen overflow-hidden bg-gray-900">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: isCurrentImageLoaded ? 1 : 0.3 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
           style={{ scale }}
           className="absolute inset-0"
         >
           <div
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${slide.image})` }}
+            className="w-full h-full bg-cover bg-center transition-all duration-700"
+            style={{ 
+              backgroundImage: `url(${slide.image})`,
+              filter: isCurrentImageLoaded ? 'blur(0px)' : 'blur(10px)',
+            }}
           />
           <div className="absolute inset-0 hero-gradient" />
           <div className="absolute inset-0 vignette-overlay" />
@@ -298,9 +331,9 @@ function HeroSection() {
           <motion.div
             key={currentSlide}
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: isCurrentImageLoaded ? 1 : 0, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           >
             <h1 className="font-['Oswald'] text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-4 sm:mb-6 tracking-tight">
               {slide.headline}
